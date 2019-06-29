@@ -45,10 +45,19 @@
 
   when: "'master' in group_names"
 
-- name: Copy joincommand to nodes
-  copy: 
-    src: "joincommand" 
-    dest: "/tmp/joincommand.sh"
-    flat: yes
-    mode: '0755'
+- block:
+  - name: Copy joincommand to nodes
+    copy: 
+      src: "joincommand.sh" 
+      dest: "/tmp/joincommand.sh"
+      flat: yes
+      mode: '0755'
+      
+  - name: execute join command
+    shell: /tmp/joincommand.sh
+    register: joinresults
+    
+  - name: Show Join results
+    debug: var=joinresults.stdout
+      
   when: "'worker' in group_names"
