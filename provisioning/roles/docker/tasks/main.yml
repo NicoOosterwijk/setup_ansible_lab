@@ -1,14 +1,38 @@
+    - name: Upgrade all packages to the latest version
+      apt:
+        name: "*"
+        state: latest
+
+    - name: Install packages
+      apt: 
+        state: present
+        name: "{{ packages }}"
+        vars:
+          packages:
+          - apt-transport-https 
+          - ca-certificates 
+          - curl 
+          - software-properties-common
+        
     - name: Add Docker repository key
-      apt_key: 
-        url: https://download.docker.com/linux/ubuntu/gpg
+      apt_key: url=https://download.docker.com/linux/ubuntu/gpg
 
     - name: Add Docker repository
-      apt_repository: 
-        repo: 'deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ lsbRelease }} stable' 
-        state: present
+      apt_repository: repo='deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ lsbRelease }} stable' state=present
 
     - name: Install docker-ce
       apt: name={{dockerPackage}}={{dockerVersion}} state=present update_cache=yes
+
+    - name: copy docker config file
+      copy: 
+        src: daemon.json
+        dest: /etc/docker/daemon.json
+        
+    - name: mkdir -p /etc/systemd/system/docker.service.d
+      file:
+        path: /etc/systemd/system/docker.service.d
+        state: directory
+        recurse: yes
 
     - name: Add user to docker group
       user:
@@ -17,3 +41,4 @@
         groups: docker
       notify:
           - Restart server
+
