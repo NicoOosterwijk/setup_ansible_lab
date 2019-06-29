@@ -1,11 +1,10 @@
 - block:
   - name: Reset cluster
-    shell: "kubeadm reset -f"
+    shell: kubeadm reset -f
 
   - name: Generate token
     shell: kubeadm token generate
     register: token
-    run_once: true
 
   - name: get token
     debug: var=token.stdout
