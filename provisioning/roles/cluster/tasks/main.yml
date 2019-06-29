@@ -17,12 +17,18 @@
     shell: kubeadm init --apiserver-advertise-address={{ MASTER_API_IP }} --pod-network-cidr={{ POD_NETWORK_CIDR }} --service-cidr {{ SERVICE_CIDR }} --token {{ token.stdout }} --token-ttl 0
 
   - name: get join command
-    shell: sudo kubeadm token create --print-join-command | tee "{{ansible_env.HOME}}/joincommand"
+    shell: sudo kubeadm token create --print-join-command | tee "/tmp/joincommand"
     register: joincommand
     
   - name: show join command (should be copied to ansible control station for other nodes)
     debug: var=joincommand.stdout
 
+  - name: Copy joincommand to nodes
+    fetch: 
+      src: "/tmp/joincommand" 
+      dest: "joincommand.sh"
+      flat: yes
+    
   - name: "Make directory"
     file:
       path: "{{ansible_env.HOME}}/.kube"
@@ -42,8 +48,9 @@
   when: "'master' in group_names"
 
 - name: Copy joincommand to nodes
-  synchronize: 
-    src: "{{ansible_env.HOME}}/joincommand" 
-    dest: "{{ansible_env.HOME}}/joincommand"
-  delegate_to: k8s-master
+  copy: 
+    src: "joincommand" 
+    dest: "/tmp/joincommand.sh"
+    flat: yes
+    mode: '0755'
   when: "'worker' in group_names"
