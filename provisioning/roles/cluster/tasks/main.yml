@@ -50,7 +50,6 @@
     copy: 
       src: "joincommand.sh" 
       dest: "/tmp/joincommand.sh"
-      flat: yes
       mode: '0755'
       
   - name: execute join command
