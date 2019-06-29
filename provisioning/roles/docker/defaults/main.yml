@@ -1,3 +1,9 @@
 dockerPackage: "docker-ce"
 dockerVersion: "17.03.2~ce-0~ubuntu-xenial"
 lsbRelease: "xenial"
+packages:
+  - apt-transport-https 
+  - ca-certificates 
+  - curl 
+  - software-properties-common
+
