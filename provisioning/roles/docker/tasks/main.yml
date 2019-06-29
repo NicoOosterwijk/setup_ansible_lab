@@ -7,12 +7,6 @@
       apt: 
         state: present
         name: "{{ packages }}"
-        vars:
-          packages:
-          - apt-transport-https 
-          - ca-certificates 
-          - curl 
-          - software-properties-common
         
     - name: Add Docker repository key
       apt_key: url=https://download.docker.com/linux/ubuntu/gpg
