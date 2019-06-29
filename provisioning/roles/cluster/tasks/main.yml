@@ -12,7 +12,7 @@
   - name: Pulling images
     shell: kubeadm config images pull
 
-  - name: Initialise master node (this can take a few minutes)
+  - name: Initialise master node (this might take a few minutes)
     shell: kubeadm init --apiserver-advertise-address={{ MASTER_API_IP }} --pod-network-cidr={{ POD_NETWORK_CIDR }} --service-cidr {{ SERVICE_CIDR }} --token {{ token.stdout }} --token-ttl 0
 
   - name: get join command
