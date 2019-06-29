@@ -41,10 +41,9 @@
         owner: "{{ansible_user}}"
         group: "{{ansible_user}}"
         remote_src: yes
+    notify:
+      - Restart server
 
-  - name: Reboot the master
-    reboot:
-     
   when: "'master' in group_names"
 
 - name: Copy joincommand to nodes
