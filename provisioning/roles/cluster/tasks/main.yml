@@ -16,6 +16,13 @@
   - name: Initialise master node (this can take a few minutes)
     shell: kubeadm init --apiserver-advertise-address={{ MASTER_API_IP }} --pod-network-cidr={{ POD_NETWORK_CIDR }} --service-cidr {{ SERVICE_CIDR }} --token {{ token.stdout }} --token-ttl 0
 
+  - name: get join command
+    shell: sudo kubeadm token create --print-join-command 
+    register: joincommand
+    
+  - name: show join command (should be copied to ansible control station for other nodes)
+    debug: var=joincommand.stdout
+
   - name: "Make directory"
     file:
       path: "{{ansible_env.HOME}}/.kube"
