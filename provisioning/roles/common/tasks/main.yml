@@ -4,7 +4,7 @@
   tags: timezone
 
 - name: set hostname on the nodes
-  hostname: name={{ inventory_hostname }}.{{ domain }}
+  hostname: name={{ inventory_hostname }}
 
 - name: Create user ansible
   user:
