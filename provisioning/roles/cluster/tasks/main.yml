@@ -1,15 +1,16 @@
-- name: Reset cluster
-  shell: "kubeadm reset -f"
-
-- name: Generate token
-  shell: kubeadm token generate
-  register: token
-  run_once: true
-
-- name: get token
-  debug: var=token.stdout
 
 - block:
+  - name: Reset cluster
+    shell: "kubeadm reset -f"
+
+  - name: Generate token
+    shell: kubeadm token generate
+    register: token
+    run_once: true
+
+  - name: get token
+    debug: var=token.stdout
+
   - name: Initialise master node
     shell: kubeadm init --apiserver-advertise-address={{ MASTER_API_IP }} --pod-network-cidr={{ POD_NETWORK_CIDR }} --service-cidr {{ SERVICE_CIDR }} --token {{ token.stdout }} --token-ttl 0
 

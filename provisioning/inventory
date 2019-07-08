@@ -1,7 +1,8 @@
 [master]
-node1    ansible_host=10.240.0.21
+k8s-master   ansible_host=10.240.0.20
 
 [worker]
+node1    ansible_host=10.240.0.21
 node2    ansible_host=10.240.0.22
 
 [docker:children]
@@ -15,6 +16,6 @@ worker
 [all:vars]
 ansible_user=ansible
 domain=k8s.digitalinfo.local
-MASTER_API_IP=10.240.0.21
+MASTER_API_IP=10.240.0.20
 POD_NETWORK_CIDR=10.244.0.0/16
 SERVICE_CIDR=10.96.0.0/12

@@ -11,13 +11,21 @@ Vagrant.configure("2") do |config|
     config.vm.box = "ubuntu/xenial64"
     config.vm.box_version = "20171212.0.0"
 
+    config.vm.define "k8s-master" do |master|
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = false
+    config.hostmanager.manage_guest = true
+        master.vm.hostname = "k8s-master"
+        master.vm.network "private_network", ip: "10.240.0.20"
+    end
+
     (1..CLUSTER_SIZE).each do |i|
         config.vm.define "node#{i}" do |node|
         config.hostmanager.enabled = true
         config.hostmanager.manage_host = false
         config.hostmanager.manage_guest = true
             node.vm.hostname = "node#{i}"
-            node.vm.network "private_network", ip: "10.240.0.2#{i}"
+            node.vm.network "private_network", ip: "10.240.0.#{i + 20}"
         end
     end
 
