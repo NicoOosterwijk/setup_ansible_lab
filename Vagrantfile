@@ -2,6 +2,12 @@
 CLUSTER_SIZE=2
 
 Vagrant.configure("2") do |config|
+
+    required_plugins = %w( vagrant-hostmanager )
+    required_plugins.each do |plugin|
+      system "vagrant plugin install #{plugin}" unless Vagrant.has_plugin? plugin
+    end
+
     config.vm.box = "ubuntu/xenial64"
     config.vm.box_version = "20171212.0.0"
 
