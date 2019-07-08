@@ -1,0 +1,30 @@
+- name: Reset cluster
+  shell: "kubeadm reset -f"
+
+- name: Generate token
+  shell: kubeadm token generate
+  register: token
+  run_once: true
+
+- name: get token
+  debug: var=token.stdout
+
+- block:
+  - name: Initialise master node
+    shell: kubeadm init --apiserver-advertise-address={{ MASTER_API_IP }} --pod-network-cidr={{ POD_NETWORK_CIDR }} --service-cidr {{ SERVICE_CIDR }} --token {{ token.stdout }} --token-ttl 0
+
+  - name: "Make directory"
+    file:
+      path: "{{ansible_env.HOME}}/.kube"
+      state: directory
+
+  - name: "Copy config"
+    copy:
+        src: "/etc/kubernetes/admin.conf"
+        dest: "{{ansible_env.HOME}}/.kube/config"
+        owner: "{{ansible_user}}"
+        group: "{{ansible_user}}"
+        remote_src: yes
+
+  when: "'master' in group_names"
+

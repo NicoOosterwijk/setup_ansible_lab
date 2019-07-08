@@ -1,0 +1,27 @@
+- name: set timezone to Europe/Amsterdam
+  timezone:
+    name: Europe/Amsterdam
+  tags: timezone
+
+- name: set hostname on the nodes
+  hostname: name={{ inventory_hostname }}.{{ domain }}
+
+- name: Create user ansible
+  user:
+        name: ansible
+        state: present
+        shell: /bin/bash
+        home: /home/ansible
+        create_home: True
+        groups: sudo
+        append: yes
+        password: "{{ 'ansible' | password_hash('sha512') }}"
+        update_password: on_create
+
+- name: ensure you'll be able to deploy later on as ansible
+  authorized_key:
+        user: ansible
+        key: "{{ lookup('file', '/Volumes/data/Nico/Documenten/.ssh/id_rsa.pub') }}"
+        state: present
+
+...

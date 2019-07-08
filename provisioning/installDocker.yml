@@ -1,0 +1,30 @@
+---
+- hosts: docker
+  become: true
+
+  vars:
+    dockerPackage: "docker-ce"
+    dockerVersion: "17.03.2~ce-0~ubuntu-xenial"
+    lsbRelease: "xenial"
+
+  handlers:
+    - name: Restart server
+      restart:
+
+  tasks:
+    - name: Add Docker repository key
+      apt_key: url=https://download.docker.com/linux/ubuntu/gpg
+
+    - name: Add Docker repository
+      apt_repository: repo='deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ lsbRelease }} stable' state=present
+
+    - name: Install docker-ce
+      apt: name={{dockerPackage}}={{dockerVersion}} state=present update_cache=yes
+
+    - name: Add user to docker group
+      user:
+        name: "{{ansible_user}}"
+        append: yes
+        groups: docker
+      notify:
+          - Restart server

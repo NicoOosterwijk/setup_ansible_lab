@@ -1,0 +1,21 @@
+- name: Add Kubernetes repository key
+  apt_key: 
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+- name: Add Kubernetes repository
+  apt_repository: 
+    repo: 'deb http://apt.kubernetes.io/ kubernetes-xenial main' 
+    state: present
+
+- block:
+  - name: Install kubelet, kubectl on master
+    apt: 
+      name: ['kubelet', 'kubectl'] 
+      state: present
+  when: "'master' in group_names"
+  
+- name: Install kubeadm on all nodes
+  apt: 
+    name: 'kubeadm'
+    state: present
+
