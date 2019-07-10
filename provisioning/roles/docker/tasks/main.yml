@@ -33,6 +33,6 @@
         name: "{{ansible_user}}"
         append: yes
         groups: docker
-      notify:
-          - Restart server
+     # notify:
+     #     - Restart server
 

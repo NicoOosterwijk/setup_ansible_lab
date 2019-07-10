@@ -9,39 +9,53 @@
   - name: get token
     debug: var=token.stdout
 
-  - name: Pulling images
-    shell: kubeadm config images pull
-
   - name: Initialise master node (this might take a few minutes)
     shell: kubeadm init --apiserver-advertise-address={{ MASTER_API_IP }} --pod-network-cidr={{ POD_NETWORK_CIDR }} --service-cidr {{ SERVICE_CIDR }} --token {{ token.stdout }} --token-ttl 0
 
   - name: get join command
-    shell: sudo kubeadm token create --print-join-command | tee "/tmp/joincommand"
+    shell: kubeadm token create --print-join-command | tee "/tmp/joincommand"
     register: joincommand
     
   - name: show join command (should be copied to ansible control station for other nodes)
     debug: var=joincommand.stdout
 
-  - name: Copy joincommand to nodes
+  - name: Fetch joincommand from master
     fetch: 
       src: "/tmp/joincommand" 
       dest: "joincommand.sh"
       flat: yes
     
-  - name: "Make directory"
+  - name: Make .kube directory 
     file:
-      path: "{{ansible_env.HOME}}/.kube"
+      #path: "{{ansible_env.HOME}}/.kube"
+      path: "/home/vagrant/.kube"
       state: directory
-
-  - name: "Copy config"
+      owner: "vagrant"
+      group: "vagrant"
+        
+  - name: Copy config to root .kube
     copy:
         src: "/etc/kubernetes/admin.conf"
-        dest: "{{ansible_env.HOME}}/.kube/config"
-        owner: "{{ansible_user}}"
-        group: "{{ansible_user}}"
+        dest: "/home/vagrant/.kube/config"
+        owner: "vagrant"
+        group: "vagrant"
         remote_src: yes
-    notify:
-      - Restart server
+
+#  - name: add KUBECONFIG to environment
+#    lineinfile:
+#      path: "/home/vagrant/.profile"
+#      line: "export KUBECONFIG=~/.kube/config"
+
+  - name: Fetch config to local .kube
+    fetch:
+        src: "/etc/kubernetes/admin.conf"
+        dest: "/Users/nico/.kube/k8s-master"
+        flat: yes
+
+  - name: Set calico for networking
+    command: "kubectl apply -f https://docs.projectcalico.org/v3.8/manifests/calico.yaml"  
+    environment:
+      KUBECONFIG: /home/vagrant/.kube/config
 
   when: "'master' in group_names"
 
@@ -60,3 +74,12 @@
     debug: var=joinresults.stdout
       
   when: "'worker' in group_names"
+
+- block:
+  - name: Let's get the status of the nodes
+    command: kubectl get nodes
+    register: getnodes
+
+  - debug: var=getnodes.stdout
+
+  when: "'master' in group_names"
