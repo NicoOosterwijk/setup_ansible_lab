@@ -7,7 +7,6 @@
     - role: docker
       tags: docker
     - role: k8s
-      tags: k82
+      tags: k8s
     - role: cluster
       tags: cluster
-

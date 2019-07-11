@@ -79,6 +79,8 @@
   - name: Let's get the status of the nodes
     command: kubectl get nodes
     register: getnodes
+    environment:
+      KUBECONFIG: /home/vagrant/.kube/config
 
   - debug: var=getnodes.stdout
 
