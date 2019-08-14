@@ -21,7 +21,7 @@
 - name: ensure you'll be able to deploy later on as ansible
   authorized_key:
         user: ansible
-        key: "{{ lookup('file', '/Users/nico/.ssh/id_rsa.pub') }}"
+        key: "{{ lookup('file', public_key_file) }}"
         state: present
 
 ...
