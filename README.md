@@ -22,7 +22,7 @@ Clone this repository with
 git clone https://github.com/NicoOosterwijk/setup_ansible_lab.git
 ```
 
-Then go into the directory with:
+Then go into the directory and start vagrant with:
 ```sh
 cd setup_ansible_lab
 vagrant up
@@ -32,14 +32,14 @@ When the jobs are finished, you should have a Kubernetes control file named k8s-
 ```sh
 export KUBECONFIG=~/.kube/k8s-master
 ```
+With this you should be able to use **kubectl** on your local computer.
 
 The following IP addresses are allocated:
 
 Node      | IP address
 --------- | -------------
-master    | 172.25.250.10
-node1     | 172.25.250.11
-node2     | 172.25.250.12
-
+master    | 172.25.250.20
+node1     | 172.25.250.21
+node2     | 172.25.250.22
 
 # Have Fun!
