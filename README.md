@@ -22,6 +22,8 @@ Clone this repository with
 git clone https://github.com/NicoOosterwijk/setup_ansible_lab.git
 ```
 
+**First, change your HOME directory in group_vars/all**
+
 Then go into the directory and start vagrant with:
 ```sh
 cd setup_ansible_lab
