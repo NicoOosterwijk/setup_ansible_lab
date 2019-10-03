@@ -49,7 +49,7 @@
   - name: Fetch config to local .kube
     fetch:
         src: "/etc/kubernetes/admin.conf"
-        dest: "/Users/nico/.kube/k8s-master"
+        dest: "{{ HOME }}/.kube/k8s-master"
         flat: yes
 
   - name: Set calico for networking
